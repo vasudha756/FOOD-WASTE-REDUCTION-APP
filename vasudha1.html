@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Waste Reduction App</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f2f8f3;
+        }
+
+        header {
+            background: #2e7d32;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 25px auto;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #ccc;
+        }
+
+        h2 {
+            color: #2e7d32;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 15px;
+            border: 1px solid #bbb;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1b5e20;
+        }
+
+        .ngo {
+            background: #e8f5e9;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .status {
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        #message {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🍱 Food Waste Reduction App</h1>
+    <p>Donate Surplus Food • Reduce Food Waste • Help People</p>
+</header>
+
+<div class="container">
+
+    <!-- Restaurant Registration -->
+    <div class="card">
+        <h2>🏪 Restaurant Registration</h2>
+
+        <form id="restaurantForm">
+
+            <label>Restaurant Name</label>
+            <input type="text" id="restaurantName" required>
+
+            <label>Contact Number</label>
+            <input type="tel" id="phone" required>
+
+            <label>Restaurant Address</label>
+            <textarea id="address" required></textarea>
+
+            <button type="submit">Register Restaurant</button>
+        </form>
+
+        <p id="message"></p>
+    </div>
+
+
+    <!-- Food Details -->
+    <div class="card">
+        <h2>🍲 Food Quantity & Details</h2>
+
+        <label>Food Name</label>
+        <input type="text" id="foodName" placeholder="Example: Rice and Dal">
+
+        <label>Food Quantity</label>
+        <input type="number" id="quantity" placeholder="Number of meals">
+
+        <label>Food Type</label>
+        <select id="foodType">
+            <option>Vegetarian</option>
+            <option>Non-Vegetarian</option>
+            <option>Vegan</option>
+        </select>
+
+        <label>Food Usable Until</label>
+        <input type="datetime-local" id="expiry">
+
+        <button onclick="saveFood()">Save Food Details</button>
+    </div>
+
+
+    <!-- NGO Matching -->
+    <div class="card">
+        <h2>📍 Nearby Shelter / NGO Matching</h2>
+
+        <div class="ngo">
+            <b>Helping Hands NGO</b>
+            <p>📍 2 km away</p>
+            <button onclick="selectNGO('Helping Hands NGO')">
+                Select NGO
+            </button>
+        </div>
+
+        <div class="ngo">
+            <b>Hope Shelter</b>
+            <p>📍 3.5 km away</p>
+            <button onclick="selectNGO('Hope Shelter')">
+                Select Shelter
+            </button>
+        </div>
+
+        <div class="ngo">
+            <b>Care Foundation</b>
+            <p>📍 5 km away</p>
+            <button onclick="selectNGO('Care Foundation')">
+                Select NGO
+            </button>
+        </div>
+
+        <p id="selectedNGO"></p>
+    </div>
+
+
+    <!-- Donation Request -->
+    <div class="card">
+        <h2>🤝 Donation Request</h2>
+
+        <p id="donationInfo">
+            Select an NGO/Shelter first.
+        </p>
+
+        <button onclick="sendDonationRequest()">
+            Send Donation Request
+        </button>
+
+        <p id="requestMessage"></p>
+    </div>
+
+
+    <!-- Status Tracking -->
+    <div class="card">
+        <h2>📦 Donation Status Tracking</h2>
+
+        <p>
+            Current Status:
+            <span class="status" id="status">
+                No Request
+            </span>
+        </p>
+
+        <button onclick="updateStatus()">
+            Update Status
+        </button>
+    </div>
+
+</div>
+
+
+<script>
+
+    let selectedNGO = "";
+    let donationStatus = "No Request";
+
+    // Restaurant Registration
+    document.getElementById("restaurantForm").addEventListener("submit",
+        function(event) {
+
+            event.preventDefault();
+
+            let name = document.getElementById("restaurantName").value;
+
+            document.getElementById("message").innerText =
+                "Restaurant " + name + " registered successfully!";
+
+        });
+
+
+    // Save Food Details
+    function saveFood() {
+
+        let food = document.getElementById("foodName").value;
+        let quantity = document.getElementById("quantity").value;
+
+        if (food === "" || quantity === "") {
+            alert("Please enter food name and quantity.");
+            return;
+        }
+
+        alert(
+            "Food details saved successfully!\n\n" +
+            "Food: " + food +
+            "\nQuantity: " + quantity + " meals"
+        );
+    }
+
+
+    // NGO Selection
+    function selectNGO(name) {
+
+        selectedNGO = name;
+
+        document.getElementById("selectedNGO").innerText =
+            "Selected: " + name;
+
+        document.getElementById("donationInfo").innerText =
+            "Donation request will be sent to " + name;
+    }
+
+
+    // Donation Request
+    function sendDonationRequest() {
+
+        if (selectedNGO === "") {
+            alert("Please select an NGO or Shelter.");
+            return;
+        }
+
+        donationStatus = "Request Sent";
+
+        document.getElementById("requestMessage").innerText =
+            "Donation request sent successfully to " + selectedNGO;
+
+        document.getElementById("status").innerText =
+            donationStatus;
+    }
+
+
+    // Status Tracking
+    function updateStatus() {
+
+        if (donationStatus === "No Request") {
+            alert("Please send a donation request first.");
+            return;
+        }
+
+        if (donationStatus === "Request Sent") {
+            donationStatus = "Accepted";
+        }
+        else if (donationStatus === "Accepted") {
+            donationStatus = "Pickup Scheduled";
+        }
+        else if (donationStatus === "Pickup Scheduled") {
+            donationStatus = "Food Collected";
+        }
+        else if (donationStatus === "Food Collected") {
+            donationStatus = "Completed";
+        }
+        else {
+            donationStatus = "Completed";
+        }
+
+        document.getElementById("status").innerText =
+            donationStatus;
+    }
+
+</script>
+
+</body>
+</html>
